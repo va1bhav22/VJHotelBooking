@@ -14,7 +14,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "./Header.css";
 import { format } from "date-fns";
-const Header = () => {
+const Header = ({type}) => {
   const [openDate, setopenDate] = useState(false);
   const [date, setDate] = useState([
     {
@@ -31,9 +31,18 @@ const Header = () => {
     room: 1,
   });
 
+  const handleOption=(name,operation)=>{
+    setOption((prev)=>{
+      return{
+        ...prev,
+        [name]:operation==="i"? option[name]+1 : option[name]-1
+      }
+    })
+  }
+
   return (
     <div className="header">
-      <div className="headerContainer">
+      <div className={type==="list" ? "headerContainer listMode" : "headerContainer"}>
         <div className="headerList">
           <div className="headerListItem active">
             <FontAwesomeIcon icon={faBed} />
@@ -61,9 +70,10 @@ const Header = () => {
           </div>
         </div>
 
-        <h1 className="headerTitle">A life of discounts? It's a Genius. </h1>
+       { type !== "list" &&
+        <> <h1 className="headerTitle">A life of discounts? It's a Genius. </h1>
         <p className="headerDiscriptions">
-          {" "}
+         
           Get rewarded for your travels – unlock instant savings of 10% or more
           with a free Lamabooking account
         </p>
@@ -99,31 +109,31 @@ const Header = () => {
           </div>
           <div className="headerSearchItem">
             <FontAwesomeIcon icon={faPerson} className="headerIcon" />
-            <span className="headerSerchText">{`${option.adult} adult - ${option.children} children - ${option.room} room`}</span>
+            <span onClick={()=>setopenoptions(!openoptions)} className="headerSerchText">{`${option.adult} adult | ${option.children} children | ${option.room} room`}</span>
             {openoptions && (
               <div className="option">
                 <div className="optionItem">
                   <span className="optionText">Adult</span>
                   <div className="optionCounter">
-                    <button className="optionCounterButton">-</button>
-                    <span className="optonCounterNumber">1</span>
-                    <button className="optionCounterButton">+</button>
+                    <button className="optionCounterButton" disabled={option.adult <=1} onClick={()=>handleOption("adult", "d")}>-</button>
+                    <span className="optonCounterNumber">{option.adult}</span>
+                    <button className="optionCounterButton" onClick={()=>handleOption("adult", "i")}>+</button>
                   </div>
                 </div>
                 <div className="optionItem">
                   <span className="optionText">Children</span>
                   <div className="optionCounter">
-                    <button className="optionCounterButton">-</button>
-                    <span className="optonCounterNumber">0</span>
-                    <button className="optionCounterButton">+</button>
+                    <button className="optionCounterButton" disabled={option.children <=0} onClick={()=>handleOption("children", "d")}>-</button>
+                    <span className="optonCounterNumber">{option.children}</span>
+                    <button className="optionCounterButton" onClick={()=>handleOption("children", "i")}>+</button>
                   </div>
                 </div>
                 <div className="optionItem">
                   <span className="optionText">Room</span>
                   <div className="optionCounter">
-                    <button className="optionCounterButton">-</button>
-                    <span className="optonCounterNumber">1</span>
-                    <button className="optionCounterButton">+</button>
+                    <button className="optionCounterButton" disabled={option.room <=1} onClick={()=>handleOption("room", "d")}>-</button>
+                    <span className="optonCounterNumber">{option.room}</span>
+                    <button className="optionCounterButton" onClick={()=>handleOption("room", "i")}>+</button>
                   </div>
                 </div>
               </div>
@@ -132,7 +142,7 @@ const Header = () => {
           <div className="headerSearchItem">
             <button className="headerBtn">Search</button>
           </div>
-        </div>
+        </div></>}
       </div>
     </div>
   );
